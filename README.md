@@ -48,7 +48,7 @@ ISW_Grupo13
 
 ---
 
-## Reglas de nombrado:
+## Reglas de nombrado
 
 **Formato general:**
 
@@ -83,7 +83,7 @@ Para establecer el criterio de linea base, se va a tener en cuenta el momento de
 
 ----
 
-## Nomenclatura de Linea base:
+## Nomenclatura de Linea base
 
 La nomenclatura de la línea base debe respetar el siguiente formato:
 
