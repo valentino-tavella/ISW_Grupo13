@@ -56,9 +56,9 @@ ISW_Grupo13
 
 - `<Prefijo>` → Indicador del tipo de Ítem de Configuración.
 
-- `<NombreDelArchivo>` → Breve descripción o título del archivo.  
+- `<TemaArchivo>` → Breve descripción o título del archivo.  
 
-- `<ExtensionDelArchivo>` → Extensión del tipo de archivo.  
+- `<ext>` → Extensión del tipo de archivo.  
 
 ---
 
@@ -66,14 +66,14 @@ ISW_Grupo13
 
 | Ítem de configuración       | Regla de nombrado                   | Ubicación Física     |
 |------------------------------|--------------------------------------|----------------------|
-| **Bibliografía**             | `ISW_G13_BIBLIOGRAFIA_<NombreArchivo>.<ext>`| `/ISW_G13_BIBLIOGRAFIA`      |
+| **Bibliografía**             | `ISW_G13_BIBLIOGRAFIA_<NombreArchivo>.<pdf>`| `/ISW_G13_BIBLIOGRAFIA`      |
 | **Código Fuente**            | `ISW_G13_CODFUENTE_<NombreArchivo>.<ext>`| `/ISW_G13_CODFUENTE`         |
-| **Material de Clase**            | `ISW_G13_MATCLASE_<NombreArchivo>.<ext>`| `/ISW_G13_MATERIAL_CLASE`     |
-| **Presentaciones**   | `ISW_G13_MATCLASE_PRES_<Tema>.<ext>`| `/ISW_G13_MATERIAL_CLASE/PRESENTACIONES`    |
-| **Prácticas** | `ISW_G13_MATCLASE_PRAC_<Caso>.<ext>`| `/ISW_G13_MATERIAL_CLASE/PRACTICAS`  |
-| **Resúmenes**                | `ISW_G13_MATCLASE_RESUM_<NombreResumen>.<ext>`| `/ISW_G13_MATERIAL_CLASE/RESUMENES`         |
-| **Trabajos Prácticos**   | `ISW_G13_TPs_PRACTICOS_<NRO PRACTICO>.<ext>`| `/ISW_G13_TPs/PRACTICOS`  |
-| **Trabajos de Investigación**   | `ISW_G13_TPs_TIGs_<NRO TIGs>.<ext>`| `/ISW_G13_TPs/TIGs`  |
+| **Material de Clase**            | `ISW_G13_MATCLASE_<NombreArchivo>.<pdf>`| `/ISW_G13_MATERIAL_CLASE`     |
+| **Presentaciones**   | `ISW_G13_MATCLASE_PRES_<Tema>.<pdf>`| `/ISW_G13_MATERIAL_CLASE/PRESENTACIONES`    |
+| **Prácticas** | `ISW_G13_MATCLASE_PRAC_<Caso>.<pdf>`| `/ISW_G13_MATERIAL_CLASE/PRACTICAS`  |
+| **Resúmenes**                | `ISW_G13_MATCLASE_RESUM_<NombreResumen>.<pdf>`| `/ISW_G13_MATERIAL_CLASE/RESUMENES`         |
+| **Trabajos Prácticos**   | `ISW_G13_TPs_PRACTICOS_<NRO PRACTICO>.<pdf>`| `/ISW_G13_TPs/PRACTICOS`  |
+| **Trabajos de Investigación**   | `ISW_G13_TPs_TIGs_<NRO TIGs>.<pdf>`| `/ISW_G13_TPs/TIGs`  |
 
 ---
 
@@ -134,7 +134,10 @@ El mensaje de commit debe estructurarse de la siguiente manera:
 ## Glosario
 
 - ISW: Ingenieria y calidad de Software 
-- G13: Grupo 13 de la materia Ingenieria y calidad de Software 
+- G13: Grupo 13 de la materia Ingenieria y calidad de Software
+- TPs: Trabajos Practicos grupales desarrollados durante la materia
+- TIGs: Trabajos de Investigacion Grupal
+- CODFUENTE: Codigo fuente desarrollado para la entrega de Trabajos Practicos
 
 ---
 
