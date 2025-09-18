@@ -42,9 +42,12 @@ ISW_Grupo13
 │   └── RESUMENES
 ├── ISW_G13_TPs
 │   ├── TIGs
-│   └── PRACTICOS
+│   ├── PRACTICOS
+│   └── CORRECCIONES
 └── ISW_G13_CODFUENTE
+
 ```
+
 
 ---
 
@@ -64,22 +67,35 @@ ISW_Grupo13
 
 ## Tabla de nombrado
 
-| Ítem de configuración       | Regla de nombrado                   | Ubicación Física     |
-|------------------------------|--------------------------------------|----------------------|
-| **Bibliografía**             | `ISW_G13_BIBLIOGRAFIA_<NombreArchivo>.<pdf>`| `/ISW_G13_BIBLIOGRAFIA`      |
-| **Código Fuente**            | `ISW_G13_CODFUENTE_<NombreArchivo>.<ext>`| `/ISW_G13_CODFUENTE`         |
-| **Material de Clase**            | `ISW_G13_MATCLASE_<NombreArchivo>.<pdf>`| `/ISW_G13_MATERIAL_CLASE`     |
-| **Presentaciones**   | `ISW_G13_MATCLASE_PRES_<Tema>.<pdf>`| `/ISW_G13_MATERIAL_CLASE/PRESENTACIONES`    |
-| **Prácticas** | `ISW_G13_MATCLASE_PRAC_<Caso>.<pdf>`| `/ISW_G13_MATERIAL_CLASE/PRACTICAS`  |
-| **Resúmenes**                | `ISW_G13_MATCLASE_RESUM_<NombreResumen>.<pdf>`| `/ISW_G13_MATERIAL_CLASE/RESUMENES`         |
-| **Trabajos Prácticos**   | `ISW_G13_TPs_PRACTICOS_<NRO PRACTICO>.<pdf>`| `/ISW_G13_TPs/PRACTICOS`  |
-| **Trabajos de Investigación**   | `ISW_G13_TPs_TIGs_<NRO TIGs>.<pdf>`| `/ISW_G13_TPs/TIGs`  |
+| Ítem de configuración         | Regla de nombrado                                 | Ubicación Física                         |
+| ----------------------------- | ------------------------------------------------- | ---------------------------------------- |
+| **Bibliografía**              | `ISW_G13_BIBLIOGRAFIA_<NombreArchivo>.<pdf>`      | `/ISW_G13_BIBLIOGRAFIA`                  |
+| **Código Fuente**             | `ISW_G13_CODFUENTE_<NombreArchivo>.<ext>`         | `/ISW_G13_CODFUENTE`                     |
+| **Material de Clase**         | `ISW_G13_MATCLASE_<NombreArchivo>.<pdf>`          | `/ISW_G13_MATERIAL_CLASE`                |
+| **Presentaciones**            | `ISW_G13_MATCLASE_PRES_<Tema>.<pdf>`              | `/ISW_G13_MATERIAL_CLASE/PRESENTACIONES` |
+| **Prácticas**                 | `ISW_G13_MATCLASE_PRAC_<Caso>.<pdf>`              | `/ISW_G13_MATERIAL_CLASE/PRACTICAS`      |
+| **Resúmenes**                 | `ISW_G13_MATCLASE_RESUM_<NombreResumen>.<pdf>`    | `/ISW_G13_MATERIAL_CLASE/RESUMENES`      |
+| **Trabajos Prácticos**        | `ISW_G13_TPs_PRACTICOS_<NRO PRACTICO>.<pdf>`      | `/ISW_G13_TPs/PRACTICOS`                 |
+| **Trabajos de Investigación** | `ISW_G13_TPs_TIGs_<NRO TIGs>.<pdf>`               | `/ISW_G13_TPs/TIGs`                      |
+| **Correcciones de TPs/TIGs**  | `ISW_G13_TPs_CORR_<NRO TP o TIG>_<Versión>.<ext>` | `/ISW_G13_TPs/CORRECCIONES`              |
+
 
 ---
 
 ## Criterio de Linea Base
 
 Para establecer el criterio de linea base, se va a tener en cuenta el momento de correccion de cada trabajo practico. Se actualizara la version de linea base cada vez que se efectue la correciones de los mismos donde cada version sera justificada y documentada.
+
+La documentación del proyecto es el conjunto de artefactos generados durante el año. 
+Incluye:
+
+- Informes de los TP y TIG (PDFs entregados).
+
+- Código fuente de  los TPs donde corresponda.
+
+- Correcciones y devoluciones del docente, que justifican la creación de una nueva línea base.
+
+
 
 ----
 
@@ -138,6 +154,11 @@ El mensaje de commit debe estructurarse de la siguiente manera:
 - TPs: Trabajos Practicos grupales desarrollados durante la materia
 - TIGs: Trabajos de Investigacion Grupal
 - CODFUENTE: Codigo fuente desarrollado para la entrega de Trabajos Practicos
+- MATCLASE: Materiales de clase
+- PRES: Presentaciones
+- PRAC: Practicas
+- RESUM: Resumenes
+- CORR: Correcciones
 
 ---
 
