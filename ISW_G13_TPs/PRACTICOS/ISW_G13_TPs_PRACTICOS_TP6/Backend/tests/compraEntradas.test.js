@@ -41,4 +41,17 @@ describe("Pruebas para la función compraEntradas", () => {
       })
     ).rejects.toThrow("El parque está cerrado ese día");
   });
+
+  test("Falla si se intentan comprar más de 10 entradas", async () => {
+    await expect(
+      comprarEntradas({
+        cantidad: 11,
+        fecha: "2025-12-16",
+        edades: [25, 30, 12, 22, 23, 24, 25, 26, 27, 28, 29],
+        tipoPase: "VIP",
+        formaPago: "efectivo",
+        email: "usuario@test.com",
+      })
+    ).rejects.toThrow("La cantidad de entradas no puede ser mayor que 10.");
+  });
 });
