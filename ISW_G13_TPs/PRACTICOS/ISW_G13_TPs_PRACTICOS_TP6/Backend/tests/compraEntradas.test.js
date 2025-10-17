@@ -16,5 +16,16 @@ describe("Pruebas para la función compraEntradas", () => {
     expect(resultado.mensaje).toMatch("Compra confirmada");
   });
 
-
+  test("Falla si no se selecciona forma de pago", async () => {
+    await expect(
+      comprarEntradas({
+        fecha: "2025-10-20",
+        cantidad: 3,
+        edades: [25, 30, 12],
+        tipoPase: "regular",
+        formaPago: "",
+        email: "usuario@test.com",
+      })
+    ).rejects.toThrow("Debe seleccionar una forma de pago");
+  });
 });
