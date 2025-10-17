@@ -28,4 +28,17 @@ describe("Pruebas para la función compraEntradas", () => {
       })
     ).rejects.toThrow("Debe seleccionar una forma de pago");
   });
+
+  test("Falla si el parque está cerrado (Lunes)", async () => {
+    await expect(
+      comprarEntradas({
+        fecha: "2025-10-20",
+        cantidad: 2,
+        edades: [20, 22],
+        tipoPase: "regular",
+        formaPago: "efectivo",
+        email: "usuario@test.com",
+      })
+    ).rejects.toThrow("El parque está cerrado ese día");
+  });
 });
