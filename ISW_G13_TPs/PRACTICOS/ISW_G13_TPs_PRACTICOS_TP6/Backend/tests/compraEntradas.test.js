@@ -97,4 +97,17 @@ describe("Pruebas para la función compraEntradas", () => {
     ).rejects.toThrow("La fecha no puede ser pasada");
   });
 
+  test("Debe fallar si el usuario no está registrado", async () => {
+    await expect(
+      comprarEntradas({
+        fecha: "2025-10-21",
+        cantidad: 2,
+        edades: [25, 30],
+        tipoPase: "regular",
+        formaPago: "tarjeta",
+        email: "",
+      })
+    ).rejects.toThrow("Debe estar registrado para comprar entradas");
+  });
+
 });
