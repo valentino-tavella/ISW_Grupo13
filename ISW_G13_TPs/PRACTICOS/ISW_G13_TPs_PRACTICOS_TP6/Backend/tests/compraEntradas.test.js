@@ -45,7 +45,7 @@ describe("Pruebas para la función compraEntradas", () => {
   test("Falla si el parque está cerrado (Lunes)", async () => {
     await expect(
       comprarEntradas({
-        fecha: "2025-10-20",
+        fecha: "2025-10-27",
         cantidad: 2,
         edades: [20, 22],
         tipoPase: "regular",
@@ -109,5 +109,4 @@ describe("Pruebas para la función compraEntradas", () => {
       })
     ).rejects.toThrow("Debe estar registrado para comprar entradas");
   });
-
 });
