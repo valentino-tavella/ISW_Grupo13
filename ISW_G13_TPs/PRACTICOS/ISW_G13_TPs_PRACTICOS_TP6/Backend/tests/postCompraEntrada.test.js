@@ -174,4 +174,85 @@ describe("Endpoints de compra de entradas", () => {
       })
     );
   });
+
+  test("falla por parque cerrado (Año Nuevo próximo)", async () => {
+    const res = await request(app)
+      .post("/api/entradas/comprar")
+      .send({
+        fecha: ymd(nextNewYear()),
+        cantidad: 3,
+        edades: [25, 30, 12],
+        tipoPase: "VIP",
+        formaPago: "tarjeta",
+        email: "carla.gomez@hotmail.com",
+      })
+      .set("Content-Type", "application/json");
+
+    expect(res.status).toBe(400);
+    expect(res.body).toEqual(
+      expect.objectContaining({
+        exito: false,
+        mensaje: "El parque está cerrado ese día",
+      })
+    );
+  });
+
+  test("falla por fecha pasada (dinámica)", async () => {
+    const res = await request(app)
+      .post("/api/entradas/comprar")
+      .send({
+        fecha: ymd(yesterday()),
+        cantidad: 2,
+        edades: [20, 25],
+        tipoPase: "regular",
+        formaPago: "efectivo",
+        email: "carla.gomez@hotmail.com",
+      })
+      .set("Content-Type", "application/json");
+
+    expect(res.status).toBe(400);
+    expect(res.body).toEqual(
+      expect.objectContaining({
+        exito: false,
+        mensaje: "La fecha no puede ser pasada",
+      })
+    );
+  });
+
+  test("falla si se intentan comprar más de 10 entradas", async () => {
+    const res = await request(app)
+      .post("/api/entradas/comprar")
+      .send({
+        fecha: ymd(tomorrow()),
+        cantidad: 11,
+        edades: [25, 30, 12, 22, 23, 24, 25, 26, 27, 28, 29],
+        tipoPase: "VIP",
+        formaPago: "efectivo",
+        email: "carla.gomez@hotmail.com",
+      })
+      .set("Content-Type", "application/json");
+
+    expect(res.status).toBe(400);
+    expect(res.body).toEqual(
+      expect.objectContaining({
+        exito: false,
+        mensaje: "La cantidad de entradas no puede ser mayor que 10.",
+      })
+    );
+  });
+
+  test("body vacío retorna error de usuario no registrado", async () => {
+    const res = await request(app)
+      .post("/api/entradas/comprar")
+      .set("Content-Type", "application/json")
+      .send({});
+
+    expect(res.status).toBe(400);
+    expect(res.body).toEqual(
+      expect.objectContaining({
+        exito: false,
+        mensaje: "Debe estar registrado para comprar entradas",
+      })
+    );
+  });
 });
