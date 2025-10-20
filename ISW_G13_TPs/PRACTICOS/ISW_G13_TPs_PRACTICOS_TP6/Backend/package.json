@@ -4,16 +4,17 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
-    "prestart": "npm test -- --watchAll=false",
-    "start": "npm run test -- --watchAll=false && node src/app.js",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand --watchAll=false",
+    "start": "npm test && node src/app.js",
     "dev": "node src/app.js"
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "sequelize": "^6.37.7",
+    "sqlite3": "^5.1.7"
   },
   "devDependencies": {
     "@jest/globals": "^30.2.0",

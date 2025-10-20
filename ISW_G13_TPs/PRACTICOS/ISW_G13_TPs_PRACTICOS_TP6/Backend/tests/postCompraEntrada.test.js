@@ -1,7 +1,19 @@
 import request from "supertest";
 import app from "../src/app.js";
+import { afterAll } from "@jest/globals";
+import sequelize from "../src/db/conexion.js";
+import dbInit from "../src/db/db-init.js";
 
 describe("Endpoints de compra de entradas", () => {
+  beforeAll(async () => {
+    await dbInit();
+  });
+
+  // Cerrar la conexión después de todos los tests
+  afterAll(async () => {
+    await sequelize.close();
+  });
+
   const ymd = (d) => {
     const y = d.getFullYear();
     const m = String(d.getMonth() + 1).padStart(2, "0");
@@ -57,7 +69,7 @@ describe("Endpoints de compra de entradas", () => {
         edades: [25, 30, 12],
         tipoPase: "VIP",
         formaPago: "tarjeta",
-        email: "carla.gomez@hotmail.com",
+        email: "roberto.saldivia@gmail.com",
       })
       .set("Content-Type", "application/json");
 
