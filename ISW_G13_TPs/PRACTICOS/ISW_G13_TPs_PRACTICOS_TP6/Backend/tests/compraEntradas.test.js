@@ -1,4 +1,4 @@
-import { comprarEntradas } from "../src/comprarEntradas.js";
+import { comprarEntradas } from "../services/comprarEntradas.js";
 import { describe, expect, test } from "@jest/globals";
 
 describe("Pruebas para la función compraEntradas", () => {
