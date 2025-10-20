@@ -107,4 +107,71 @@ describe("Endpoints de compra de entradas", () => {
       })
     );
   });
+
+  test("falla por parque cerrado (Navidad)", async () => {
+    const res = await request(app)
+      .post("/api/entradas/comprar")
+      .send({
+        fecha: "2025-12-25",
+        cantidad: 2,
+        edades: [20, 22],
+        tipoPase: "regular",
+        formaPago: "efectivo",
+        email: "carla.gomez@hotmail.com",
+      })
+      .set("Content-Type", "application/json");
+
+    expect(res.status).toBe(400);
+    expect(res.body).toEqual(
+      expect.objectContaining({
+        exito: false,
+        mensaje: "El parque está cerrado ese día",
+      })
+    );
+  });
+
+  test("falla si usuario no registrado", async () => {
+    const res = await request(app)
+      .post("/api/entradas/comprar")
+      .send({
+        fecha: "2025-10-21",
+        cantidad: 2,
+        edades: [25, 30],
+        tipoPase: "regular",
+        formaPago: "tarjeta",
+        email: "",
+      })
+      .set("Content-Type", "application/json");
+
+    expect(res.status).toBe(400);
+    expect(res.body).toEqual(
+      expect.objectContaining({
+        exito: false,
+        mensaje: "Debe estar registrado para comprar entradas",
+      })
+    );
+  });
+
+  test("falla por parque cerrado (Lunes futuro)", async () => {
+    const fechaLunes = ymd(nextWeekday(1)); // 1=Lunes
+    const res = await request(app)
+      .post("/api/entradas/comprar")
+      .send({
+        fecha: fechaLunes,
+        cantidad: 2,
+        edades: [20, 22],
+        tipoPase: "regular",
+        formaPago: "efectivo",
+        email: "carla.gomez@hotmail.com",
+      })
+      .set("Content-Type", "application/json");
+
+    expect(res.status).toBe(400);
+    expect(res.body).toEqual(
+      expect.objectContaining({
+        exito: false,
+        mensaje: "El parque está cerrado ese día",
+      })
+    );
+  });
 });
