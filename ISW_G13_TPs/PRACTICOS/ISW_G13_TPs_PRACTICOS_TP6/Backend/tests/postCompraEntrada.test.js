@@ -47,4 +47,64 @@ describe("Endpoints de compra de entradas", () => {
       expect.objectContaining({ ok: true, service: "entradas" })
     );
   });
+
+  test("compra válida devuelve 201 y exito true", async () => {
+    const res = await request(app)
+      .post("/api/entradas/comprar")
+      .send({
+        fecha: "2025-10-21",
+        cantidad: 3,
+        edades: [25, 30, 12],
+        tipoPase: "VIP",
+        formaPago: "tarjeta",
+        email: "carla.gomez@hotmail.com",
+      })
+      .set("Content-Type", "application/json");
+
+    expect(res.status).toBe(201);
+    expect(res.body).toEqual(
+      expect.objectContaining({ exito: true, mensaje: expect.any(String) })
+    );
+  });
+
+  test("compra válida con efectivo devuelve 201", async () => {
+    const res = await request(app)
+      .post("/api/entradas/comprar")
+      .send({
+        fecha: ymd(tomorrow()),
+        cantidad: 2,
+        edades: [20, 22],
+        tipoPase: "regular",
+        formaPago: "efectivo",
+        email: "carla.gomez@hotmail.com",
+      })
+      .set("Content-Type", "application/json");
+
+    expect(res.status).toBe(201);
+    expect(res.body).toEqual(
+      expect.objectContaining({ exito: true, mensaje: expect.any(String) })
+    );
+  });
+
+  test("falla por forma de pago inválida", async () => {
+    const res = await request(app)
+      .post("/api/entradas/comprar")
+      .send({
+        fecha: "2025-10-21",
+        cantidad: 2,
+        edades: [20, 22],
+        tipoPase: "regular",
+        formaPago: "",
+        email: "carla.gomez@hotmail.com",
+      })
+      .set("Content-Type", "application/json");
+
+    expect(res.status).toBe(400);
+    expect(res.body).toEqual(
+      expect.objectContaining({
+        exito: false,
+        mensaje: "Debe seleccionar una forma de pago",
+      })
+    );
+  });
 });
