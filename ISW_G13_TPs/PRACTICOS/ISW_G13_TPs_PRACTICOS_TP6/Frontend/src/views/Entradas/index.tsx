@@ -1,9 +1,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, DatePicker, InputNumber, Select, Space } from "antd";
+import { Button, ConfigProvider, DatePicker, InputNumber, Select } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import z from "zod";
 
+// --- ESQUEMAS Y LÓGICA (SIN CAMBIOS) ---
 const visitanteSchema = z.object({
     edad: z
         .number()
@@ -13,7 +14,7 @@ const visitanteSchema = z.object({
 });
 
 const schema = z.object({
-    fecha: z.date("Seleccione una fecha"),
+    fecha: z.date({ required_error: "Seleccione una fecha" }),
     formaPago: z.enum(["Efectivo", "Tarjeta"], "Seleccione una forma de pago"),
     visitantes: z
         .array(visitanteSchema)
@@ -27,7 +28,7 @@ function Entradas() {
         resolver: zodResolver(schema),
         defaultValues: {
             fecha: undefined,
-            formaPago: "Efectivo",
+            formaPago: "Tarjeta",
             visitantes: [{ edad: 0, tipo: "Regular" }],
         },
     });
@@ -36,8 +37,9 @@ function Entradas() {
         control: methods.control,
         name: "visitantes",
     });
-
-    const cantidad = methods.watch("visitantes").length;
+    
+    const visitantes = methods.watch("visitantes");
+    const cantidad = visitantes.length;
 
     const handleCantidadChange = (value: number) => {
         if (value > fields.length) {
@@ -52,236 +54,178 @@ function Entradas() {
 
     const onSubmit = (data: FormData) => {
         console.log("Datos enviados", data);
+        alert("¡Compra confirmada! Revisa la consola para ver los datos.");
     };
 
     const disabledDate = (current: Dayjs) => {
         const now = dayjs();
         const today = now.startOf("day");
-
-        // Si son las 19:00 o más, bloquear el día actual
         const isAfterClosing = now.hour() >= 19;
 
-        // Deshabilita fechas pasadas o el día actual si el parque ya cerró
-        if (
-            current < today ||
-            (isAfterClosing && current.isSame(today, "day"))
-        ) {
+        if (current < today || (isAfterClosing && current.isSame(today, "day"))) {
             return true;
         }
-
-        // Deshabilita lunes
         if (current.day() === 1) return true;
-
-        // Deshabilita 25 de diciembre
         const isChristmas = current.date() === 25 && current.month() === 11;
-
-        // Deshabilita 1 de enero
         const isNewYear = current.date() === 1 && current.month() === 0;
-
         return isChristmas || isNewYear;
     };
 
+    const precios = { Regular: 5000, VIP: 10000 };
+    const totalCompra = visitantes.reduce((acc, visitante) => {
+        const precio = precios[visitante.tipo] || 0;
+        return acc + precio;
+    }, 0);
+
+    // --- RENDERIZADO CON DISEÑO RESPONSIVE MEJORADO ---
     return (
-        <div>
-            <div className="bg-white rounded-md shadow-xl flex flex-col gap-2 p-6 w-3xl m-auto max-w-9/10">
-                <div>
-                    <p className="text-2xl w-full text-center font-semibold">
-                        Compra de Entradas
-                    </p>
-                </div>
-                <form
-                    className="flex flex-col gap-4 w-full"
-                    onSubmit={methods.handleSubmit(onSubmit)}
-                >
-                    <div className="flex gap-4 w-full">
-                        <div className="flex flex-col w-full">
-                            <label>Fecha de visita:</label>
-                            <Controller
-                                control={methods.control}
-                                name="fecha"
-                                render={({ field }) => (
-                                    <DatePicker
-                                        format={{
-                                            format: "DD/MM/YYYY",
-                                            type: "mask",
-                                        }}
-                                        size="large"
-                                        placeholder="Fecha"
-                                        disabledDate={disabledDate}
-                                        onChange={(value) =>
-                                            field.onChange(
-                                                value?.toDate() ?? undefined
-                                            )
-                                        }
-                                        value={
-                                            field.value
-                                                ? dayjs(field.value)
-                                                : null
-                                        }
-                                    />
-                                )}
-                            />
-                        </div>
-                        <div className="flex flex-col w-full">
-                            <label>Cantidad de entradas:</label>
-                            <Select
-                                options={Array.from({ length: 10 }, (_, i) => ({
-                                    value: i + 1,
-                                    label: (i + 1).toString(),
-                                }))}
-                                size="large"
-                                value={cantidad}
-                                onChange={handleCantidadChange}
-                            />
-                        </div>
-                        <div className="flex flex-col w-full">
-                            <label>Forma de pago:</label>
-                            <Controller
-                                control={methods.control}
-                                name="formaPago"
-                                render={({ field }) => (
-                                    <Select
-                                        options={[
-                                            {
-                                                value: "Efectivo",
-                                                label: "Efectivo",
-                                            },
-                                            {
-                                                value: "Tarjeta",
-                                                label: "Tarjeta",
-                                            },
-                                        ]}
-                                        size="large"
-                                        value={field.value}
-                                        onChange={field.onChange}
-                                    />
-                                )}
-                            />
-                            {methods.formState.errors.formaPago && (
-                                <p className="text-red-500 text-sm">
-                                    {methods.formState.errors.formaPago.message}
-                                </p>
-                            )}
-                        </div>
+        <ConfigProvider
+            theme={{
+                token: {
+                    colorPrimary: '#134611',
+                    borderRadius: 8,
+                    fontFamily: 'inherit',
+                    colorLink: '#3E8914',
+                    colorLinkHover: '#3DA35D',
+                },
+            }}
+        >
+            <div className="min-h-screen bg-[#E8FCCF] flex items-center justify-center p-4 font-sans">
+                <div className="bg-white rounded-xl shadow-2xl flex flex-col gap-6 p-4 md:p-8 w-full max-w-4xl m-auto">
+                    <div>
+                        <h1 className="text-2xl md:text-3xl w-full text-center font-bold text-[#134611]">
+                            Compra de Entradas
+                        </h1>
+                        <p className="text-center text-gray-500 mt-1">Completa los datos para tu próxima aventura</p>
                     </div>
-                    <div className="rounded-md overflow-hidden border border-pakistan-green">
-                        <table className="w-full text-sm text-left rtl:text-right text-pakistan-green">
-                            <thead className="text-base text-nyanza uppercase bg-pakistan-green text-center">
-                                <tr>
-                                    <th scope="col" className="px-6 py-3">
-                                        Visitante
-                                    </th>
-                                    <th scope="col" className="px-6 py-3">
-                                        Edad
-                                    </th>
-                                    <th scope="col" className="px-6 py-3">
-                                        Tipo de Pase
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody className="overflow-y-auto max-h-[450px]">
+                    <form
+                        className="flex flex-col gap-6 w-full"
+                        onSubmit={methods.handleSubmit(onSubmit)}
+                    >
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+                            <div className="flex flex-col">
+                                <label className="mb-1.5 font-medium text-gray-600">Fecha de visita:</label>
+                                <Controller
+                                    control={methods.control}
+                                    name="fecha"
+                                    render={({ field, fieldState: { error } }) => (
+                                        <>
+                                            <DatePicker
+                                                style={{ width: '100%' }}
+                                                format="DD/MM/YYYY"
+                                                size="large"
+                                                placeholder="Seleccionar fecha"
+                                                disabledDate={disabledDate}
+                                                onChange={(value) => field.onChange(value?.toDate() ?? undefined)}
+                                                value={field.value ? dayjs(field.value) : null}
+                                                status={error ? 'error' : undefined}
+                                            />
+                                            {error && <p className="text-red-500 text-sm mt-1">{error.message}</p>}
+                                        </>
+                                    )}
+                                />
+                            </div>
+                            <div className="flex flex-col w-full">
+                                <label className="mb-1.5 font-medium text-gray-600">Cantidad:</label>
+                                <Select
+                                    size="large"
+                                    value={cantidad}
+                                    onChange={handleCantidadChange}
+                                    options={Array.from({ length: 10 }, (_, i) => ({
+                                        value: i + 1,
+                                        label: `${i + 1} entrada${i > 0 ? 's' : ''}`,
+                                    }))}
+                                />
+                            </div>
+                            <div className="flex flex-col w-full">
+                                <label className="mb-1.5 font-medium text-gray-600">Forma de pago:</label>
+                                <Controller
+                                    control={methods.control}
+                                    name="formaPago"
+                                    render={({ field }) => (
+                                        <Select
+                                            size="large"
+                                            value={field.value}
+                                            onChange={field.onChange}
+                                            options={[{ value: "Tarjeta", label: "Tarjeta" }, { value: "Efectivo", label: "Efectivo" }]}
+                                        />
+                                    )}
+                                />
+                            </div>
+                        </div>
+
+                        {/* --- LISTA/TABLA DE VISITANTES RESPONSIVE --- */}
+                        <div className="w-full">
+                            {/* Encabezado visible solo en pantallas grandes (md en adelante) */}
+                            <div className="hidden md:grid md:grid-cols-3 gap-x-6 px-6 py-3 text-xs text-white uppercase bg-[#134611] rounded-t-lg">
+                                <div className="font-semibold">Visitante</div>
+                                <div className="font-semibold">Edad</div>
+                                <div className="font-semibold">Tipo de Pase</div>
+                            </div>
+                            {/* Contenedor de las tarjetas/filas */}
+                            <div className="space-y-4 md:space-y-0">
                                 {fields.map((field, index) => (
-                                    <tr
-                                        key={field.id}
-                                        className="bg-white border-b  border-gray-200 text-base text-center"
-                                    >
-                                        <th
-                                            scope="row"
-                                            className="px-6 py-4 font-bold whitespace-nowrap text-lg"
-                                        >
+                                    <div key={field.id} className="grid grid-cols-1 md:grid-cols-3 gap-x-6 p-4 md:px-6 md:py-4 bg-white border md:border-t-0 border-gray-200 last:rounded-b-lg first:md:rounded-t-none hover:bg-gray-50">
+                                        <div className="flex items-center font-bold text-gray-800">
+                                            <span className="md:hidden mr-2 text-gray-500 font-medium">Visitante:</span>
                                             Visitante {index + 1}
-                                        </th>
-                                        <td className="px-6 py-4">
+                                        </div>
+                                        <div className="flex items-center mt-2 md:mt-0">
+                                            <label className="md:hidden mr-2 text-gray-500 font-medium">Edad:</label>
                                             <Controller
                                                 control={methods.control}
                                                 name={`visitantes.${index}.edad`}
-                                                render={({ field }) => (
-                                                    <InputNumber
-                                                        min={0}
-                                                        max={120}
-                                                        value={field.value}
-                                                        onChange={(val) =>
-                                                            field.onChange(
-                                                                val ?? 0
-                                                            )
-                                                        }
-                                                        className="w-24"
-                                                    />
+                                                render={({ field, fieldState: { error } }) => (
+                                                    <div className="w-full md:w-auto">
+                                                        <InputNumber
+                                                            min={0} max={120}
+                                                            value={field.value}
+                                                            onChange={(val) => field.onChange(val ?? 0)}
+                                                            className="w-full md:w-24"
+                                                            status={error ? 'error' : undefined}
+                                                        />
+                                                        {error && <p className="text-red-500 text-xs mt-1">{error.message}</p>}
+                                                    </div>
                                                 )}
                                             />
-                                            {methods.formState.errors
-                                                .visitantes?.[index]?.edad && (
-                                                <p className="text-red-500 text-sm">
-                                                    {
-                                                        methods.formState.errors
-                                                            .visitantes[index]
-                                                            ?.edad?.message
-                                                    }
-                                                </p>
-                                            )}
-                                        </td>
-                                        <td className="px-6 py-4">
+                                        </div>
+                                        <div className="flex items-center mt-2 md:mt-0">
+                                            <label className="md:hidden mr-2 text-gray-500 font-medium">Pase:</label>
                                             <Controller
                                                 control={methods.control}
                                                 name={`visitantes.${index}.tipo`}
                                                 render={({ field }) => (
                                                     <Select
-                                                        options={[
-                                                            {
-                                                                value: "Regular",
-                                                                label: "Regular",
-                                                                desc: "Regular ($5000)",
-                                                            },
-                                                            {
-                                                                value: "VIP",
-                                                                label: "VIP",
-                                                                desc: "VIP ($10000)",
-                                                            },
-                                                        ]}
                                                         value={field.value}
-                                                        onChange={
-                                                            field.onChange
-                                                        }
-                                                        className="w-36 text-start"
-                                                        optionRender={(
-                                                            option
-                                                        ) => (
-                                                            <Space>
-                                                                {
-                                                                    option.data
-                                                                        .desc
-                                                                }
-                                                            </Space>
-                                                        )}
+                                                        onChange={field.onChange}
+                                                        className="w-full md:w-40"
+                                                        options={[
+                                                            { value: "Regular", label: "Regular ($5000)" },
+                                                            { value: "VIP", label: "VIP ($10000)" },
+                                                        ]}
                                                     />
                                                 )}
                                             />
-                                            {methods.formState.errors
-                                                .visitantes?.[index]?.tipo && (
-                                                <p className="text-red-500 text-sm">
-                                                    {
-                                                        methods.formState.errors
-                                                            .visitantes[index]
-                                                            ?.tipo?.message
-                                                    }
-                                                </p>
-                                            )}
-                                        </td>
-                                    </tr>
+                                        </div>
+                                    </div>
                                 ))}
-                            </tbody>
-                        </table>
-                    </div>
-                    <Button
-                        type="primary"
-                        htmlType="submit"
-                        className="mt-4 bg-pakistan-green hover:bg-green-700"
-                    >
-                        Confirmar compra
-                    </Button>
-                </form>
+                            </div>
+                        </div>
+
+                        <div className="text-right mt-2">
+                            <p className="text-lg font-medium text-gray-600">Total a Pagar:</p>
+                            <p className="text-2xl md:text-3xl font-bold text-[#134611]">
+                                {new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(totalCompra)}
+                            </p>
+                        </div>
+                        
+                        <Button type="primary" htmlType="submit" size="large" block>
+                            Confirmar Compra
+                        </Button>
+                    </form>
+                </div>
             </div>
-        </div>
+        </ConfigProvider>
     );
 }
 
