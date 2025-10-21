@@ -1,43 +1,57 @@
-import { comprarEntradas } from "../services/comprarEntradas.js";
-import { describe, expect, test } from "@jest/globals";
+import { comprarEntradas } from "../services/comprarEntradas.service.js";
+import { describe, expect, test, beforeAll, afterAll } from "@jest/globals";
+import dbInit from "../db/db-init.js";
+import sequelize from "../db/db.js";
 
 describe("Pruebas para la función compraEntradas", () => {
-  test("Compra Valida con tarjeta y fecha correcta", async () => {
+  beforeAll(async () => {
+    await dbInit();
+  });
+
+  afterAll(async () => {
+    await sequelize.close();
+  });
+
+  test("Compra Valida con diferentes tipos de pase", async () => {
     const resultado = await comprarEntradas({
-      fecha: "2025-10-21",
-      cantidad: 3,
-      edades: [25, 30, 12],
-      tipoPase: "VIP",
+      fecha: "2025-12-18",
       formaPago: "tarjeta",
       email: "carla.gomez@hotmail.com",
+      entradas: [
+        { edad_visitante: 25, tipoPase: "VIP" },
+        { edad_visitante: 30, tipoPase: "VIP" },
+        { edad_visitante: 12, tipoPase: "regular" },
+      ],
     });
 
     expect(resultado.exito).toBe(true);
     expect(resultado.mensaje).toMatch("Compra confirmada");
+    expect(resultado.total).toBe(25000);
   });
 
   test("Falla si no se selecciona forma de pago", async () => {
     await expect(
       comprarEntradas({
-        fecha: "2025-10-21",
-        cantidad: 3,
-        edades: [25, 30, 12],
-        tipoPase: "regular",
+        fecha: "2025-12-18",
         formaPago: "",
         email: "carla.gomez@hotmail.com",
+        entradas: [{ edad_visitante: 25, tipoPase: "regular" }],
       })
     ).rejects.toThrow("Debe seleccionar una forma de pago");
   });
 
   test("Falla si se intentan comprar más de 10 entradas", async () => {
+    const entradasInvalidas = Array(11).fill({
+      edad_visitante: 30,
+      tipoPase: "VIP",
+    });
+
     await expect(
       comprarEntradas({
-        cantidad: 11,
-        fecha: "2025-10-21",
-        edades: [25, 30, 12, 22, 23, 24, 25, 26, 27, 28, 29],
-        tipoPase: "VIP",
+        fecha: "2025-12-18",
         formaPago: "efectivo",
         email: "carla.gomez@hotmail.com",
+        entradas: entradasInvalidas,
       })
     ).rejects.toThrow("La cantidad de entradas no puede ser mayor que 10.");
   });
@@ -46,11 +60,9 @@ describe("Pruebas para la función compraEntradas", () => {
     await expect(
       comprarEntradas({
         fecha: "2025-10-27",
-        cantidad: 2,
-        edades: [20, 22],
-        tipoPase: "regular",
         formaPago: "efectivo",
         email: "carla.gomez@hotmail.com",
+        entradas: [{ edad_visitante: 20, tipoPase: "regular" }],
       })
     ).rejects.toThrow("El parque está cerrado ese día");
   });
@@ -59,11 +71,9 @@ describe("Pruebas para la función compraEntradas", () => {
     await expect(
       comprarEntradas({
         fecha: "2025-12-25",
-        cantidad: 2,
-        edades: [20, 22],
-        tipoPase: "regular",
         formaPago: "efectivo",
         email: "carla.gomez@hotmail.com",
+        entradas: [{ edad_visitante: 20, tipoPase: "regular" }],
       })
     ).rejects.toThrow("El parque está cerrado ese día");
   });
@@ -72,11 +82,9 @@ describe("Pruebas para la función compraEntradas", () => {
     await expect(
       comprarEntradas({
         fecha: "2026-01-01",
-        cantidad: 4,
-        edades: [30, 32, 5, 8],
-        tipoPase: "VIP",
         formaPago: "tarjeta",
         email: "carla.gomez@hotmail.com",
+        entradas: [{ edad_visitante: 30, tipoPase: "VIP" }],
       })
     ).rejects.toThrow("El parque está cerrado ese día");
   });
@@ -88,11 +96,9 @@ describe("Pruebas para la función compraEntradas", () => {
     await expect(
       comprarEntradas({
         fecha: fechaPasada.toISOString().split("T")[0],
-        cantidad: 2,
-        edades: [20, 25],
-        tipoPase: "regular",
         formaPago: "efectivo",
         email: "carla.gomez@hotmail.com",
+        entradas: [{ edad_visitante: 20, tipoPase: "regular" }],
       })
     ).rejects.toThrow("La fecha no puede ser pasada");
   });
@@ -100,12 +106,10 @@ describe("Pruebas para la función compraEntradas", () => {
   test("Debe fallar si el usuario no está registrado", async () => {
     await expect(
       comprarEntradas({
-        fecha: "2025-10-21",
-        cantidad: 2,
-        edades: [25, 30],
-        tipoPase: "regular",
+        fecha: "2025-12-18",
         formaPago: "tarjeta",
         email: "",
+        entradas: [{ edad_visitante: 25, tipoPase: "regular" }],
       })
     ).rejects.toThrow("Debe estar registrado para comprar entradas");
   });

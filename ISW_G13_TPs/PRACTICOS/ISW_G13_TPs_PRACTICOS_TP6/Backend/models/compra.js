@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import sequelize from "../conexion.js";
+import sequelize from "../db/db.js";
 
 const Compra = sequelize.define(
   "Compra",
@@ -30,7 +30,7 @@ const Compra = sequelize.define(
   },
   {
     tableName: "Compra",
-    timestamps: true,
+    timestamps: false,
   }
 );
 

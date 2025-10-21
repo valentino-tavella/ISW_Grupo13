@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand --watchAll=false",
-    "start": "npm test && node src/app.js",
-    "dev": "node src/app.js"
+    "start": "npm test && node app.js",
+    "dev": "node app.js"
   },
   "author": "",
   "license": "ISC",
