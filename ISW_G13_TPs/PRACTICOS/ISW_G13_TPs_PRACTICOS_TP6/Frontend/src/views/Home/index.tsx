@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 function Home() {
     return (
         <div className="bg-light-green text-pakistan-green p-6 w-3xl max-w-9/10 rounded-md flex flex-col gap-4">
@@ -9,7 +11,9 @@ function Home() {
                 </p>
             </div>
             <div>
-                <button className="primary">Comprar entradas</button>
+                <Link to="compra">
+                    <button className="primary">Comprar entradas</button>
+                </Link>
             </div>
         </div>
     );
