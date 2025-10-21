@@ -1,0 +1,49 @@
+@import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
+@import "tailwindcss";
+
+@theme {
+    --color-pakistan-green: #134611;
+    --color-india-green: #3e8914;
+    --color-pigment-green: #3da35d;
+    --color-light-green: #96e072;
+    --color-nyanza: #e8fccf;
+    --font-raleway: "Raleway", sans-serif;
+}
+
+:root {
+    font-family: var(--font-raleway);
+}
+
+body {
+    background-color: var(--color-nyanza);
+    color: var(--color-pakistan-green);
+}
+
+header,
+footer {
+    background-color: var(--color-pakistan-green);
+    color: var(--color-nyanza);
+}
+
+button.primary {
+    background-color: var(--color-india-green);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 0.375rem;
+    cursor: pointer;
+}
+
+button.primary:hover {
+    background-color: var(--color-pigment-green);
+}
+
+label {
+    font-size: var(--text-lg);
+}
+
+input {
+    background-color: var(--color-nyanza);
+    font-size: var(--text-xl);
+    border-radius: 10px;
+    padding: 8px 10px;
+}
