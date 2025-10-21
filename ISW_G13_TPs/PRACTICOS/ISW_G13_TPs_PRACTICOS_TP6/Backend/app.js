@@ -1,9 +1,14 @@
 import express from "express";
+import cors from "cors";
 import dbInit from "./db/db-init.js";
 import router from "./routes/comprarEntradas.router.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+app.use(cors({
+  origin: "http://localhost:5173"
+}))
 
 app.use(express.json());
 app.use(router);
