@@ -1,15 +1,20 @@
+import { useEntradaMutations } from "@/hooks/useEntradaMutations";
+import { useAuthStore } from "@/store/auth-store";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, DatePicker, InputNumber, Select, Space } from "antd";
+import { HouseIcon } from "@phosphor-icons/react";
+import { DatePicker, InputNumber, Select, Space } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
+import { Navigate, useNavigate } from "react-router";
 import z from "zod";
+import Swal from "sweetalert2";
 
 const visitanteSchema = z.object({
     edad: z
         .number()
         .min(0, "Debe ser mayor o igual a 0")
         .max(120, "Edad no válida"),
-    tipo: z.enum(["Regular", "VIP"], "Seleccione un tipo de pase"),
+    tipo: z.enum(["regular", "VIP"], "Seleccione un tipo de pase"),
 });
 
 const schema = z.object({
@@ -23,12 +28,15 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 function Entradas() {
+    const navigate = useNavigate();
+    const { email } = useAuthStore();
+    const { comprarEntradaMutation } = useEntradaMutations();
     const methods = useForm<FormData>({
         resolver: zodResolver(schema),
         defaultValues: {
             fecha: undefined,
             formaPago: "Efectivo",
-            visitantes: [{ edad: 0, tipo: "Regular" }],
+            visitantes: [{ edad: 0, tipo: "regular" }],
         },
     });
 
@@ -43,7 +51,7 @@ function Entradas() {
         if (value > fields.length) {
             const nuevos = Array(value - fields.length)
                 .fill(null)
-                .map(() => ({ edad: 0, tipo: "Regular" as const }));
+                .map(() => ({ edad: 0, tipo: "regular" as const }));
             append(nuevos);
         } else {
             replace(fields.slice(0, value));
@@ -51,7 +59,51 @@ function Entradas() {
     };
 
     const onSubmit = (data: FormData) => {
-        console.log("Datos enviados", data);
+        if (email)
+            comprarEntradaMutation.mutate(
+                {
+                    fecha: data.fecha.toISOString(),
+                    formaPago: data.formaPago,
+                    email: email,
+                    entradas: data.visitantes.map((value) => ({
+                        edad_visitante: value.edad,
+                        tipoPase: value.tipo,
+                    })),
+                },
+                {
+                    onSuccess: async () => {
+                        await Swal.fire({
+                            title: "Compra realizada con éxito",
+                            text: "Te llegará un mail de confirmación",
+                            icon: "success",
+                            showConfirmButton: false,
+                            iconColor: "#3da35d",
+                            timer: 5000,
+                            customClass: {
+                                popup: "bg-nyanza!",
+                                title: "text-pakistan-green!",
+                                htmlContainer: "text-pakistan-green!",
+                            },
+                        });
+                        await navigate("/");
+                    },
+                    onError: async (data) => {
+                        
+                        await Swal.fire({
+                            title: "Ups... Algo pasó!",
+                            text: `Motivo: ${data.response?.data.mensaje}`,
+                            icon: "error",
+                            showConfirmButton: false,
+                            timer: 5000,
+                            customClass: {
+                                popup: "bg-nyanza!",
+                                title: "text-pakistan-green!",
+                                htmlContainer: "text-pakistan-green!",
+                            },
+                        });
+                    },
+                }
+            );
     };
 
     const disabledDate = (current: Dayjs) => {
@@ -81,10 +133,18 @@ function Entradas() {
         return isChristmas || isNewYear;
     };
 
+    if (!email) return <Navigate to="/auth/login" />;
+
     return (
         <div>
-            <div className="bg-white rounded-md shadow-xl flex flex-col gap-2 p-6 w-3xl m-auto max-w-9/10">
-                <div>
+            <div className="bg-white rounded-md shadow-xl flex flex-col gap-2 p-6 w-3xl m-auto max-w-9/10 relative">
+                <button
+                    className="primary absolute"
+                    onClick={() => navigate("/")}
+                >
+                    <HouseIcon weight="fill" size={24} />
+                </button>
+                <div className="h-12">
                     <p className="text-2xl w-full text-center font-semibold">
                         Compra de Entradas
                     </p>
@@ -121,6 +181,11 @@ function Entradas() {
                                     />
                                 )}
                             />
+                            {methods.formState.errors.fecha && (
+                                <p className="text-red-500 text-sm">
+                                    {methods.formState.errors.fecha.message}
+                                </p>
+                            )}
                         </div>
                         <div className="flex flex-col w-full">
                             <label>Cantidad de entradas:</label>
@@ -272,13 +337,7 @@ function Entradas() {
                             </tbody>
                         </table>
                     </div>
-                    <Button
-                        type="primary"
-                        htmlType="submit"
-                        className="mt-4 bg-pakistan-green hover:bg-green-700"
-                    >
-                        Confirmar compra
-                    </Button>
+                    <button className="primary">Confirmar compra</button>
                 </form>
             </div>
         </div>
