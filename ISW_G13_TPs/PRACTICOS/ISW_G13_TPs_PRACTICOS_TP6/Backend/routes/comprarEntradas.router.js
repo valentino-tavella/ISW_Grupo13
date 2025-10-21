@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { comprarEntradas } from "../services/comprarEntradas.js";
+import { comprarEntradas } from "../services/comprarEntradas.service.js";
 
 const router = Router();
 

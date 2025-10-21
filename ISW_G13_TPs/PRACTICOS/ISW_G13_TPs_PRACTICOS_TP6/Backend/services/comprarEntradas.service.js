@@ -1,7 +1,14 @@
+// services/comprarEntradas.service.js
+
 import { verificarFecha } from "../utils/verificarFecha.js";
 import { usuariosMock } from "../mocks/usuario.mock.js";
-import Compra from "../src/db/models/compra.js";
-import Entrada from "../src/db/models/entrada.js";
+import Compra from "../models/compra.js";
+import Entrada from "../models/entrada.js";
+
+const PRECIOS = {
+  VIP: 10000,
+  regular: 5000,
+};
 
 export const comprarEntradas = async (datosCompra) => {
   const usuario = usuariosMock.find((u) => u.email === datosCompra.email);
@@ -16,30 +23,39 @@ export const comprarEntradas = async (datosCompra) => {
     throw new Error("Debe seleccionar una forma de pago válida");
   }
 
-  if (datosCompra.cantidad > 10) {
+  if (!datosCompra.entradas || datosCompra.entradas.length === 0) {
+    throw new Error("Debe seleccionar al menos una entrada");
+  }
+  if (datosCompra.entradas.length > 10) {
     throw new Error("La cantidad de entradas no puede ser mayor que 10.");
   }
 
   verificarFecha(datosCompra.fecha);
 
-  // Calcular el precio por entrada según el tipo de pase
-  const precioPorEntrada = datosCompra.tipoPase === "VIP" ? 10000 : 5000;
-  const suma = precioPorEntrada * datosCompra.cantidad;
+  let totalSuma = 0;
+  for (const entrada of datosCompra.entradas) {
+    const precio = PRECIOS[entrada.tipoPase];
+    if (!precio) {
+      throw new Error(`Tipo de pase inválido: ${entrada.tipoPase}`);
+    }
+    totalSuma += precio;
+  }
+
 
   const createCompra = await Compra.create({
     fecha_compra: new Date(),
-    total: suma,
+    total: totalSuma, 
     mail_comprador: datosCompra.email,
     tipo_pago: datosCompra.formaPago,
   });
 
-  for (let i = 0; i < datosCompra.cantidad; i++) {
+  for (const entrada of datosCompra.entradas) {
     await Entrada.create({
       id_compra: createCompra.id,
-      edad_visitante: datosCompra.edades[i],
-      tipo: datosCompra.tipoPase,
-      precio: datosCompra.tipoPase === "VIP" ? 10000 : 5000,
-      fecha_visita: datosCompra.fecha,
+      edad_visitante: entrada.edad_visitante,
+      tipo: entrada.tipoPase,
+      precio: PRECIOS[entrada.tipoPase], 
+      fecha_visita: datosCompra.fecha, 
     });
   }
 
@@ -47,10 +63,10 @@ export const comprarEntradas = async (datosCompra) => {
     exito: true,
     mensaje: "Compra confirmada",
     fecha: datosCompra.fecha,
-    cantidad: datosCompra.cantidad,
-    edades: datosCompra.edades,
-    tipoPase: datosCompra.tipoPase,
+    cantidad: datosCompra.entradas.length, 
+    entradas: datosCompra.entradas, 
     formaPago: datosCompra.formaPago,
     email: datosCompra.email,
+    total: totalSuma,
   };
 };

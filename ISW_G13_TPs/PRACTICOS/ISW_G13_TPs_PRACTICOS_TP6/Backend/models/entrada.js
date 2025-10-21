@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import sequelize from "../conexion.js";
+import sequelize from "../db/db.js";
 
 const Entrada = sequelize.define(
   "Entrada",
@@ -22,7 +22,7 @@ const Entrada = sequelize.define(
       allowNull: false,
     },
     precio: {
-      type: DataTypes.FLOAT,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     fecha_visita: {
@@ -30,9 +30,9 @@ const Entrada = sequelize.define(
       allowNull: false,
     },
   },
-    {
+  {
     tableName: "Entrada",
-    timestamps: true,
+    timestamps: false,
   }
 );
 

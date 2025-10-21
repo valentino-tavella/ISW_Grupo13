@@ -5,7 +5,7 @@ export const verificarFecha = (fecha) => {
 
   // Validar que no sea pasada
   if (fechaVisita < hoy) {
-    throw new Error("La fecha no puede ser anterior a hoy");
+    throw new Error("La fecha no puede ser pasada");
   }
 
   // Validar que no sea lunes (cerrado)
