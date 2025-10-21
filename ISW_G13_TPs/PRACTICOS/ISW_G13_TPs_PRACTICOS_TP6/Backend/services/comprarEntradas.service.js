@@ -4,6 +4,7 @@ import { verificarFecha } from "../utils/verificarFecha.js";
 import { usuariosMock } from "../mocks/usuario.mock.js";
 import Compra from "../models/compra.js";
 import Entrada from "../models/entrada.js";
+import { enviarMailConfirmacion } from "./email.service.js";
 
 const PRECIOS = {
   VIP: 10000,
@@ -58,6 +59,8 @@ export const comprarEntradas = async (datosCompra) => {
       fecha_visita: datosCompra.fecha, 
     });
   }
+
+  enviarMailConfirmacion(datosCompra);
 
   return {
     exito: true,

@@ -24,4 +24,14 @@ export const usuariosMock = [
     nombre: "Santiago Fernández",
     email: "santiago.fer@outlook.com"
   },
+  {
+    id: 6,
+    nombre: "Leonel Martos",
+    email: "leonelmartos04@gmail.com"
+  },
+  {
+    id:7,
+    nombre: "Agus Pavon",
+    email: "aguspavonm3@gmail.com"
+  },
 ];
