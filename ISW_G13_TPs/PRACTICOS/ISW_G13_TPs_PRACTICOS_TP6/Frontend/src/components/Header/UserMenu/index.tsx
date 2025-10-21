@@ -1,9 +1,18 @@
+import { useAuthStore } from "@/store/auth-store";
 import { Link } from "react-router";
 
 function UserMenu() {
-    const isLogin = false;
+    const { email, logout } = useAuthStore();
 
-    if (isLogin) return <>Hola Lucía</>;
+    if (email)
+        return (
+            <div className="flex items-center gap-2">
+                <p>
+                    Hola <span className="">{email.split("@")[0]}</span>!
+                </p>
+                <button className="primary" onClick={logout}>Cerrar sesión</button>
+            </div>
+        );
 
     return (
         <Link
