@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 @layer theme, base, ant, components, utilities;
 @import "tailwindcss";
 
@@ -8,11 +8,11 @@
     --color-pigment-green: #3da35d;
     --color-light-green: #96e072;
     --color-nyanza: #e8fccf;
-    --font-raleway: "Raleway", sans-serif;
+    --font-montserrat: "Montserrat", sans-serif;
 }
 
 :root {
-    font-family: var(--font-raleway);
+    font-family: var(--font-montserrat);
 }
 
 body {
