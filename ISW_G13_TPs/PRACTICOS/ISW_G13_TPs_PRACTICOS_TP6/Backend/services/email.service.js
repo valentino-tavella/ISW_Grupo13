@@ -1,18 +1,14 @@
-// src/services/emailService.js
 import nodemailer from 'nodemailer';
 import dotenv from "dotenv";
 dotenv.config();
 
-
-// Configuración del "transporter" que usará Nodemailer para enviar el mail.
-// Debes usar variables de entorno para las credenciales, NUNCA las escribas directamente.
 const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_HOST, // Ej: 'smtp.sendgrid.net'
-  port: process.env.EMAIL_PORT, // Ej: 587
-  secure: false, // true para 465, false para otros puertos
+  host: process.env.EMAIL_HOST,
+  port: process.env.EMAIL_PORT,
+  secure: false,
   auth: {
-    user: process.env.EMAIL_USER, // Ej: 'apikey' para SendGrid
-    pass: process.env.EMAIL_PASS, // La API Key de SendGrid
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
   },
 });
 
@@ -44,8 +40,7 @@ export const enviarMailConfirmacion = async (datosCompra) => {
 
   } catch (error) {
     console.error('Error al enviar el mail de confirmación:', error);
-    // Es importante que si el mail falla, no detenga la compra.
-    // Por eso solo lo logueamos y no lanzamos un error que frene el proceso.
+    // Si el email falla, no se cancela la compra, solo se notifica el error
     return false;
   }
 };
