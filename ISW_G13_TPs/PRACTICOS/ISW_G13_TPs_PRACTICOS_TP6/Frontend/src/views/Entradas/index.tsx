@@ -65,7 +65,7 @@ function Entradas() {
 
         // Si la forma de pago es TARJETA, redirigir a la página de pago
         if (data.formaPago === "Tarjeta") {
-            const precios = {Regular: 5000, VIP: 10000};
+            const precios = {regular: 5000, VIP: 10000};
             const total = data.visitantes.reduce((acc, visitante) => {
                 const precio = precios[visitante.tipo] || 0;
                 return acc + precio;
