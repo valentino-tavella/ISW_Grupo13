@@ -60,53 +60,62 @@ function Entradas() {
         }
     };
 
-    const onSubmit = (data: FormData) => {
-        if (email)
-            comprarEntradaMutation.mutate(
-                {
-                    fecha: data.fecha.toISOString(),
-                    formaPago: data.formaPago.toLocaleLowerCase(),
-                    email: email,
-                    entradas: data.visitantes.map((value) => ({
-                        edad_visitante: value.edad,
-                        tipoPase: value.tipo,
-                    })),
+  const onSubmit = (data: FormData) => {
+    if (email)
+        comprarEntradaMutation.mutate(
+            {
+                fecha: data.fecha.toISOString(),
+                formaPago: data.formaPago.toLocaleLowerCase(),
+                email: email,
+                entradas: data.visitantes.map((value) => ({
+                    edad_visitante: value.edad,
+                    tipoPase: value.tipo,
+                })),
+            },
+            {
+                onSuccess: async () => {
+                    await Swal.fire({
+                        title: "Compra realizada con éxito",
+                        html: `
+                            Te llegará un mail de confirmación.<br>
+                            Cantidad de entradas compradas: ${data.visitantes.length}<br>
+                            Fecha: ${new Date(data.fecha).toLocaleDateString("es-AR", {
+                                weekday: "long",
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                            })}
+                        `,
+                        icon: "success",
+                        showConfirmButton: false,
+                        iconColor: "#3da35d",
+                        timer: 5000,
+                        customClass: {
+                            popup: "bg-nyanza!",
+                            title: "text-pakistan-green!",
+                            htmlContainer: "text-pakistan-green!",
+                        },
+                    });
+                    await navigate("/");
                 },
-                {
-                    onSuccess: async () => {
-                        await Swal.fire({
-                            title: "Compra realizada con éxito",
-                            text: "Te llegará un mail de confirmación",
-                            icon: "success",
-                            showConfirmButton: false,
-                            iconColor: "#3da35d",
-                            timer: 5000,
-                            customClass: {
-                                popup: "bg-nyanza!",
-                                title: "text-pakistan-green!",
-                                htmlContainer: "text-pakistan-green!",
-                            },
-                        });
-                        await navigate("/");
-                    },
-                    onError: async (data) => {
+                onError: async (data) => {
+                    await Swal.fire({
+                        title: "Ups... Algo pasó!",
+                        text: `Motivo: ${data.response?.data.mensaje}`,
+                        icon: "error",
+                        showConfirmButton: false,
+                        timer: 5000,
+                        customClass: {
+                            popup: "bg-nyanza!",
+                            title: "text-pakistan-green!",
+                            htmlContainer: "text-pakistan-green!",
+                        },
+                    });
+                },
+            }
+        );
+};
 
-                        await Swal.fire({
-                            title: "Ups... Algo pasó!",
-                            text: `Motivo: ${data.response?.data.mensaje}`,
-                            icon: "error",
-                            showConfirmButton: false,
-                            timer: 5000,
-                            customClass: {
-                                popup: "bg-nyanza!",
-                                title: "text-pakistan-green!",
-                                htmlContainer: "text-pakistan-green!",
-                            },
-                        });
-                    },
-                }
-            );
-    };
 
     const disabledDate = (current: Dayjs) => {
         const now = dayjs();
