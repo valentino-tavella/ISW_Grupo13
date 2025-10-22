@@ -9,7 +9,7 @@ import {Navigate, useNavigate} from "react-router";
 import z from "zod";
 import Swal from "sweetalert2";
 
-// --- ESQUEMAS Y LÓGICA (SIN CAMBIOS) ---
+// --- ESQUEMAS Y LÓGICA ---
 const visitanteSchema = z.object({
     edad: z
         .number()
@@ -60,12 +60,35 @@ function Entradas() {
         }
     };
 
-  const onSubmit = (data: FormData) => {
-    if (email)
+    const onSubmit = (data: FormData) => {
+        if (!email) return;
+
+        // Si la forma de pago es TARJETA, redirigir a la página de pago
+        if (data.formaPago === "Tarjeta") {
+            const precios = {Regular: 5000, VIP: 10000};
+            const total = data.visitantes.reduce((acc, visitante) => {
+                const precio = precios[visitante.tipo] || 0;
+                return acc + precio;
+            }, 0);
+
+            // Navegar a la página de MercadoPago con los datos
+            navigate("/pago/mercadopago", {
+                state: {
+                    total,
+                    fecha: data.fecha,
+                    visitantes: data.visitantes,
+                    email,
+                    formaPago: data.formaPago,
+                },
+            });
+            return;
+        }
+
+        // Si la forma de pago es EFECTIVO, procesar directamente
         comprarEntradaMutation.mutate(
             {
                 fecha: data.fecha.toISOString(),
-                formaPago: data.formaPago.toLocaleLowerCase(),
+                formaPago: data.formaPago.toLowerCase(),
                 email: email,
                 entradas: data.visitantes.map((value) => ({
                     edad_visitante: value.edad,
@@ -96,7 +119,7 @@ function Entradas() {
                             htmlContainer: "text-pakistan-green!",
                         },
                     });
-                    await navigate("/");
+                    navigate("/");
                 },
                 onError: async (data) => {
                     await Swal.fire({
@@ -114,8 +137,7 @@ function Entradas() {
                 },
             }
         );
-};
-
+    };
 
     const disabledDate = (current: Dayjs) => {
         const now = dayjs();
@@ -139,8 +161,6 @@ function Entradas() {
 
     if (!email) return <Navigate to="/auth/login"/>;
 
-
-    // --- RENDERIZADO CON DISEÑO RESPONSIVE MEJORADO ---
     return (
         <ConfigProvider
             theme={{
