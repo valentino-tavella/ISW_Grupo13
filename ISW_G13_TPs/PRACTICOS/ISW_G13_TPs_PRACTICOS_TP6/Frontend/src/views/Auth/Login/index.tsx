@@ -31,7 +31,7 @@ function Login() {
     const onSubmit = (data: FormValues) => {
         //Aca resuelve el login
         login(data.email);
-        navigate("/");
+        navigate("/entradas");
     };
 
     const onChangeHiddenPass = () => {
