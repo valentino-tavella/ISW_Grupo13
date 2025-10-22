@@ -1,14 +1,15 @@
-import { useEntradaMutations } from "@/hooks/useEntradaMutations";
-import { useAuthStore } from "@/store/auth-store";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { HouseIcon } from "@phosphor-icons/react";
-import { DatePicker, InputNumber, Select, Space } from "antd";
-import dayjs, { Dayjs } from "dayjs";
-import { Controller, useFieldArray, useForm } from "react-hook-form";
-import { Navigate, useNavigate } from "react-router";
+import {useEntradaMutations} from "@/hooks/useEntradaMutations";
+import {useAuthStore} from "@/store/auth-store";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {HouseIcon} from "@phosphor-icons/react";
+import {DatePicker, ConfigProvider, InputNumber, Select, Space} from "antd";
+import dayjs, {Dayjs} from "dayjs";
+import {Controller, useFieldArray, useForm} from "react-hook-form";
+import {Navigate, useNavigate} from "react-router";
 import z from "zod";
 import Swal from "sweetalert2";
 
+// --- ESQUEMAS Y LÓGICA (SIN CAMBIOS) ---
 const visitanteSchema = z.object({
     edad: z
         .number()
@@ -29,29 +30,30 @@ type FormData = z.infer<typeof schema>;
 
 function Entradas() {
     const navigate = useNavigate();
-    const { email } = useAuthStore();
-    const { comprarEntradaMutation } = useEntradaMutations();
+    const {email} = useAuthStore();
+    const {comprarEntradaMutation} = useEntradaMutations();
     const methods = useForm<FormData>({
         resolver: zodResolver(schema),
         defaultValues: {
             fecha: undefined,
             formaPago: "Efectivo",
-            visitantes: [{ edad: 0, tipo: "regular" }],
+            visitantes: [{edad: 0, tipo: "regular"}],
         },
     });
 
-    const { fields, append, replace } = useFieldArray({
+    const {fields, append, replace} = useFieldArray({
         control: methods.control,
         name: "visitantes",
     });
 
-    const cantidad = methods.watch("visitantes").length;
+    const visitantes = methods.watch("visitantes");
+    const cantidad = visitantes.length;
 
     const handleCantidadChange = (value: number) => {
         if (value > fields.length) {
             const nuevos = Array(value - fields.length)
                 .fill(null)
-                .map(() => ({ edad: 0, tipo: "regular" as const }));
+                .map(() => ({edad: 0, tipo: "regular" as const}));
             append(nuevos);
         } else {
             replace(fields.slice(0, value));
@@ -63,7 +65,7 @@ function Entradas() {
             comprarEntradaMutation.mutate(
                 {
                     fecha: data.fecha.toISOString(),
-                    formaPago: data.formaPago,
+                    formaPago: data.formaPago.toLocaleLowerCase(),
                     email: email,
                     entradas: data.visitantes.map((value) => ({
                         edad_visitante: value.edad,
@@ -88,7 +90,7 @@ function Entradas() {
                         await navigate("/");
                     },
                     onError: async (data) => {
-                        
+
                         await Swal.fire({
                             title: "Ups... Algo pasó!",
                             text: `Motivo: ${data.response?.data.mensaje}`,
@@ -109,129 +111,135 @@ function Entradas() {
     const disabledDate = (current: Dayjs) => {
         const now = dayjs();
         const today = now.startOf("day");
-
-        // Si son las 19:00 o más, bloquear el día actual
         const isAfterClosing = now.hour() >= 19;
 
-        // Deshabilita fechas pasadas o el día actual si el parque ya cerró
-        if (
-            current < today ||
-            (isAfterClosing && current.isSame(today, "day"))
-        ) {
+        if (current < today || (isAfterClosing && current.isSame(today, "day"))) {
             return true;
         }
-
-        // Deshabilita lunes
         if (current.day() === 1) return true;
-
-        // Deshabilita 25 de diciembre
         const isChristmas = current.date() === 25 && current.month() === 11;
-
-        // Deshabilita 1 de enero
         const isNewYear = current.date() === 1 && current.month() === 0;
-
         return isChristmas || isNewYear;
     };
 
-    if (!email) return <Navigate to="/auth/login" />;
+    const precios = {regular: 5000, VIP: 10000};
+    const totalCompra = visitantes.reduce((acc, visitante) => {
+        const precio = precios[visitante.tipo] || 0;
+        return acc + precio;
+    }, 0);
 
+    if (!email) return <Navigate to="/auth/login"/>;
+
+
+    // --- RENDERIZADO CON DISEÑO RESPONSIVE MEJORADO ---
     return (
-        <div>
-            <div className="bg-white rounded-md shadow-xl flex flex-col gap-2 p-6 w-3xl m-auto max-w-9/10 relative">
-                <button
-                    className="primary absolute"
-                    onClick={() => navigate("/")}
-                >
-                    <HouseIcon weight="fill" size={24} />
-                </button>
-                <div className="h-12">
-                    <p className="text-2xl w-full text-center font-semibold">
-                        Compra de Entradas
-                    </p>
-                </div>
-                <form
-                    className="flex flex-col gap-4 w-full"
-                    onSubmit={methods.handleSubmit(onSubmit)}
-                >
-                    <div className="flex gap-4 w-full">
-                        <div className="flex flex-col w-full">
-                            <label>Fecha de visita:</label>
-                            <Controller
-                                control={methods.control}
-                                name="fecha"
-                                render={({ field }) => (
-                                    <DatePicker
-                                        format={{
-                                            format: "DD/MM/YYYY",
-                                            type: "mask",
-                                        }}
-                                        size="large"
-                                        placeholder="Fecha"
-                                        disabledDate={disabledDate}
-                                        onChange={(value) =>
-                                            field.onChange(
-                                                value?.toDate() ?? undefined
-                                            )
-                                        }
-                                        value={
-                                            field.value
-                                                ? dayjs(field.value)
-                                                : null
-                                        }
-                                    />
-                                )}
-                            />
-                            {methods.formState.errors.fecha && (
-                                <p className="text-red-500 text-sm">
-                                    {methods.formState.errors.fecha.message}
-                                </p>
-                            )}
-                        </div>
-                        <div className="flex flex-col w-full">
-                            <label>Cantidad de entradas:</label>
-                            <Select
-                                options={Array.from({ length: 10 }, (_, i) => ({
-                                    value: i + 1,
-                                    label: (i + 1).toString(),
-                                }))}
-                                size="large"
-                                value={cantidad}
-                                onChange={handleCantidadChange}
-                            />
-                        </div>
-                        <div className="flex flex-col w-full">
-                            <label>Forma de pago:</label>
-                            <Controller
-                                control={methods.control}
-                                name="formaPago"
-                                render={({ field }) => (
-                                    <Select
-                                        options={[
-                                            {
-                                                value: "Efectivo",
-                                                label: "Efectivo",
-                                            },
-                                            {
-                                                value: "Tarjeta",
-                                                label: "Tarjeta",
-                                            },
-                                        ]}
-                                        size="large"
-                                        value={field.value}
-                                        onChange={field.onChange}
-                                    />
-                                )}
-                            />
-                            {methods.formState.errors.formaPago && (
-                                <p className="text-red-500 text-sm">
-                                    {methods.formState.errors.formaPago.message}
-                                </p>
-                            )}
-                        </div>
+        <ConfigProvider
+            theme={{
+                token: {
+                    colorPrimary: '#134611',
+                    borderRadius: 6,
+                    fontFamily: 'inherit',
+                    colorLink: '#3E8914',
+                    colorLinkHover: '#3DA35D',
+                },
+            }}
+        >
+            <div>
+                <div className="bg-white rounded-md shadow-xl flex flex-col gap-2 p-6 w-xl m-auto max-w-9/10 relative">
+                    <button
+                        className="primary absolute"
+                        onClick={() => navigate("/")}
+                    >
+                        <HouseIcon weight="fill" size={24}/>
+                    </button>
+                    <div className="h-12">
+                        <p className="text-2xl w-full text-center font-semibold">
+                            Compra de Entradas
+                        </p>
                     </div>
-                    <div className="rounded-md overflow-hidden border border-pakistan-green">
-                        <table className="w-full text-sm text-left rtl:text-right text-pakistan-green">
-                            <thead className="text-base text-nyanza uppercase bg-pakistan-green text-center">
+                    <form
+                        className="flex flex-col gap-4 w-full"
+                        onSubmit={methods.handleSubmit(onSubmit)}
+                    >
+                        <div className="flex gap-4 w-full items-end">
+                            <div className="flex flex-col w-full">
+                                <label>Fecha de visita:</label>
+                                <Controller
+                                    control={methods.control}
+                                    name="fecha"
+                                    render={({field}) => (
+                                        <DatePicker
+                                            format={{
+                                                format: "DD/MM/YYYY",
+                                                type: "mask",
+                                            }}
+                                            size="large"
+                                            placeholder="Fecha"
+                                            disabledDate={disabledDate}
+                                            onChange={(value) =>
+                                                field.onChange(
+                                                    value?.toDate() ?? undefined
+                                                )
+                                            }
+                                            value={
+                                                field.value
+                                                    ? dayjs(field.value)
+                                                    : null
+                                            }
+                                        />
+                                    )}
+                                />
+                                {methods.formState.errors.fecha && (
+                                    <p className="text-red-500 text-sm">
+                                        {methods.formState.errors.fecha.message}
+                                    </p>
+                                )}
+                            </div>
+                            <div className="flex flex-col w-full">
+                                <label>Cantidad de entradas:</label>
+                                <Select
+                                    size="large"
+                                    value={cantidad}
+                                    onChange={handleCantidadChange}
+                                    options={Array.from({length: 10}, (_, i) => ({
+                                        value: i + 1,
+                                        label: `${i + 1} entrada${i > 0 ? 's' : ''}`,
+                                    }))}
+                                />
+                            </div>
+                            <div className="flex flex-col w-full">
+                                <label className="mb-1.5 font-medium text-gray-600">Forma de pago:</label>
+                                <Controller
+                                    control={methods.control}
+                                    name="formaPago"
+                                    render={({field}) => (
+                                        <Select
+                                            options={[
+                                                {
+                                                    value: "Efectivo",
+                                                    label: "Efectivo",
+                                                },
+                                                {
+                                                    value: "Tarjeta",
+                                                    label: "Tarjeta",
+                                                },
+                                            ]}
+                                            size="large"
+                                            value={field.value}
+                                            onChange={field.onChange}
+                                        />
+                                    )}
+                                />
+                                {methods.formState.errors.formaPago && (
+                                    <p className="text-red-500 text-sm">
+                                        {methods.formState.errors.formaPago.message}
+                                    </p>
+                                )}
+                            </div>
+                        </div>
+                        <div className="rounded-md overflow-hidden border border-pakistan-green">
+                            <table className="w-full text-sm text-left rtl:text-right text-pakistan-green">
+                                <thead className="text-base text-nyanza uppercase bg-pakistan-green text-center">
                                 <tr>
                                     <th scope="col" className="px-6 py-3">
                                         Visitante
@@ -243,8 +251,8 @@ function Entradas() {
                                         Tipo de Pase
                                     </th>
                                 </tr>
-                            </thead>
-                            <tbody className="overflow-y-auto max-h-[450px]">
+                                </thead>
+                                <tbody className="overflow-y-auto max-h-[450px]">
                                 {fields.map((field, index) => (
                                     <tr
                                         key={field.id}
@@ -260,7 +268,7 @@ function Entradas() {
                                             <Controller
                                                 control={methods.control}
                                                 name={`visitantes.${index}.edad`}
-                                                render={({ field }) => (
+                                                render={({field}) => (
                                                     <InputNumber
                                                         min={0}
                                                         max={120}
@@ -289,12 +297,12 @@ function Entradas() {
                                             <Controller
                                                 control={methods.control}
                                                 name={`visitantes.${index}.tipo`}
-                                                render={({ field }) => (
+                                                render={({field}) => (
                                                     <Select
                                                         options={[
                                                             {
-                                                                value: "Regular",
-                                                                label: "Regular",
+                                                                value: "regular",
+                                                                label: "regular",
                                                                 desc: "Regular ($5000)",
                                                             },
                                                             {
@@ -334,13 +342,20 @@ function Entradas() {
                                         </td>
                                     </tr>
                                 ))}
-                            </tbody>
-                        </table>
-                    </div>
-                    <button className="primary">Confirmar compra</button>
-                </form>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div className="text-right mt-2">
+                            <p className="text-lg font-medium text-gray-600">Total a Pagar:</p>
+                            <p className="text-2xl md:text-3xl font-bold text-pakistan-green">
+                                {new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(totalCompra)}
+                            </p>
+                        </div>
+                        <button className="primary">Confirmar compra</button>
+                    </form>
+                </div>
             </div>
-        </div>
+        </ConfigProvider>
     );
 }
 
