@@ -1,7 +1,9 @@
-import logoEcoHarmonyPark from "./logo_ecoharmony_park.png";
+import logoEcoHarmonyParkGeneral from "./logo_ecoharmony_park_general.png";
+import logoEcoHarmonyParkNavMenu from "./logo_ecoharmony_park_navmenu.png";
 
 const images = {
-    logoEcoHarmonyPark,
+    logoEcoHarmonyParkGeneral,
+    logoEcoHarmonyParkNavMenu,
 };
 
 export default images;
