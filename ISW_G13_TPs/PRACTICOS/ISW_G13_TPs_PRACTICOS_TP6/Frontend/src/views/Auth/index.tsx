@@ -15,11 +15,10 @@ function Auth() {
                 </button>
                 <div className="flex items-center p-6 gap-1">
                     <img
-                        className="max-w-[100px]"
-                        src={images.logoEcoHarmonyPark}
+                        className="max-w-[350px]"
+                        src={images.logoEcoHarmonyParkGeneral}
                         alt="Logo de EcoHarmony Park"
                     />
-                    <h1 className="mt-4 text-2xl">EcoHarmony Park</h1>
                 </div>
                 <div>
                     <Outlet />
