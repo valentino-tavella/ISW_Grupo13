@@ -13,9 +13,9 @@ import Swal from "sweetalert2";
 const visitanteSchema = z.object({
     edad: z
         .number()
-        .min(0, "Debe ser mayor o igual a 0")
-        .max(120, "Edad no válida"),
-    tipo: z.enum(["regular", "VIP"], "Seleccione un tipo de pase"),
+        .min(1, "Debe ser mayor a 0 años")
+        .max(100, "Debe ser menor a 100 años"),
+    tipo: z.enum(["Regular", "VIP"], "Seleccione un tipo de pase"),
 });
 
 const schema = z.object({
@@ -37,7 +37,7 @@ function Entradas() {
         defaultValues: {
             fecha: undefined,
             formaPago: "Efectivo",
-            visitantes: [{edad: 0, tipo: "regular"}],
+            visitantes: [{edad: 1, tipo: "Regular"}],
         },
     });
 
@@ -53,7 +53,7 @@ function Entradas() {
         if (value > fields.length) {
             const nuevos = Array(value - fields.length)
                 .fill(null)
-                .map(() => ({edad: 0, tipo: "regular" as const}));
+                .map(() => ({edad: 1, tipo: "regular" as const}));
             append(nuevos);
         } else {
             replace(fields.slice(0, value));
