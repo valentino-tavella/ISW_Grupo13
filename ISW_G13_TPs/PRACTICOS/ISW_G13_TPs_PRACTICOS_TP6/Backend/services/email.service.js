@@ -22,7 +22,7 @@ export const enviarMailConfirmacion = async (datosCompra) => {
       subject: '¡Confirmación de tu compra de entradas!', // Asunto
       html: `
         <h1>¡Gracias por tu compra, ${datosCompra.email}!</h1>
-        <p>Tu visita para el día <strong>${datosCompra.fecha}</strong> ha sido confirmada.</p>
+        <p>Tu visita para el día <strong>${new Date(datosCompra.fecha).toLocaleDateString('es-AR', {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})}</strong> ha sido confirmada.</p>
         <p>Detalles de la compra:</p>
         <ul>
           <li>Cantidad de entradas: ${datosCompra.entradas.length}</li>
