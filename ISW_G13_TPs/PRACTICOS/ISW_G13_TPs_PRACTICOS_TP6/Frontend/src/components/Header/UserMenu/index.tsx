@@ -7,10 +7,10 @@ function UserMenu() {
     if (email)
         return (
             <div className="flex items-center gap-2">
-                <p>
+                <p className="text-base lg:text-xl">
                     Hola <span className="">{email.split("@")[0]}</span>!
                 </p>
-                <button className="primary" onClick={logout}>Cerrar sesión</button>
+                <button className="primary text-base lg:text-xl" onClick={logout}>Cerrar sesión</button>
             </div>
         );
 
