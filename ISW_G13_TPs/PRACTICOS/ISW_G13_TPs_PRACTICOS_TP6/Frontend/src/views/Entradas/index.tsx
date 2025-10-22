@@ -15,7 +15,7 @@ const visitanteSchema = z.object({
         .number()
         .min(1, "Debe ser mayor a 0 años")
         .max(100, "Debe ser menor a 100 años"),
-    tipo: z.enum(["Regular", "VIP"], "Seleccione un tipo de pase"),
+    tipo: z.enum(["regular", "VIP"], "Seleccione un tipo de pase"),
 });
 
 const schema = z.object({
@@ -37,7 +37,7 @@ function Entradas() {
         defaultValues: {
             fecha: undefined,
             formaPago: "Efectivo",
-            visitantes: [{edad: 1, tipo: "Regular"}],
+            visitantes: [{edad: 1, tipo: "regular"}],
         },
     });
 
@@ -300,7 +300,7 @@ function Entradas() {
                                                 render={({field}) => (
                                                     <InputNumber
                                                         min={0}
-                                                        max={120}
+                                                        max={100}
                                                         value={field.value}
                                                         onChange={(val) =>
                                                             field.onChange(
@@ -331,7 +331,7 @@ function Entradas() {
                                                         options={[
                                                             {
                                                                 value: "regular",
-                                                                label: "regular",
+                                                                label: "Regular",
                                                                 desc: "Regular ($5000)",
                                                             },
                                                             {
