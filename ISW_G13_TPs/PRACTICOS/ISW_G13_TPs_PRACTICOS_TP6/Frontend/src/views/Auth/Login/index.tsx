@@ -5,6 +5,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useAuthStore } from "@/store/auth-store";
 import { useNavigate } from "react-router";
+import Swal from "sweetalert2";
+import { usuariosMock } from "../../../mocks/usuarios.mock.js"; 
 
 const signInSchema = z.object({
     email: z.email("Debe ser un email valido."),
@@ -29,9 +31,21 @@ function Login() {
     });
 
     const onSubmit = (data: FormValues) => {
-        //Aca resuelve el login
-        login(data.email);
-        navigate("/entradas");
+        const usuarioValido = usuariosMock.find(
+            (usuario) => usuario.email === data.email
+        );
+
+        if (usuarioValido) {
+            login(data.email);
+            navigate("/entradas");
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "Email no encontrado",
+                text: "El email ingresado no se encuentra registrado. Por favor, verifica tus datos.",
+                confirmButtonColor: "var(--color-pakistan-green)", 
+            });
+        }
     };
 
     const onChangeHiddenPass = () => {
@@ -56,7 +70,7 @@ function Login() {
                         })}
                         type="text"
                     />
-                    <p className="text-sm">
+                    <p className="text-sm text-red-500">
                         {methods.formState.errors.email?.message}
                     </p>
                 </div>
@@ -83,7 +97,7 @@ function Login() {
                             )}
                         </button>
                     </div>
-                    <p className="text-sm">
+                    <p className="text-sm text-red-500">
                         {methods.formState.errors.password?.message}
                     </p>
                 </div>
