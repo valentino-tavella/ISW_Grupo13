@@ -174,23 +174,24 @@ function Entradas() {
             }}
         >
             <div>
-                <div className="bg-white rounded-md shadow-xl flex flex-col gap-2 p-6 w-xl m-auto max-w-9/10 relative">
-                    <button
-                        className="primary absolute"
-                        onClick={() => navigate("/")}
-                    >
-                        <HouseIcon weight="fill" size={24}/>
-                    </button>
-                    <div className="h-12">
-                        <p className="text-2xl w-full text-center font-semibold">
+                <div className="bg-white rounded-md shadow-xl flex flex-col gap-4 p-4 md:p-6 w-full max-w-2xl mx-auto relative">
+                    <div className="relative flex justify-center items-center mb-2 md:mb-0">
+                        <button
+                            className="primary absolute left-0 top-1/2 -translate-y-1/2 !w-auto"
+                            onClick={() => navigate("/")}
+                        >
+                            <HouseIcon weight="fill" size={24}/>
+                        </button>
+                        <p className="text-xl md:text-2xl w-full text-center font-semibold">
                             Compra de Entradas
                         </p>
                     </div>
+
                     <form
                         className="flex flex-col gap-4 w-full"
                         onSubmit={methods.handleSubmit(onSubmit)}
                     >
-                        <div className="flex gap-4 w-full items-end">
+                        <div className="flex flex-col md:flex-row gap-4 w-full md:items-end">
                             <div className="flex flex-col w-full">
                                 <label>Fecha de visita:</label>
                                 <Controller
@@ -215,6 +216,7 @@ function Entradas() {
                                                     ? dayjs(field.value)
                                                     : null
                                             }
+                                            className="w-full"
                                         />
                                     )}
                                 />
@@ -266,114 +268,123 @@ function Entradas() {
                                 )}
                             </div>
                         </div>
-                        <div className="rounded-md overflow-hidden border border-pakistan-green">
-                            <table className="w-full text-sm text-left rtl:text-right text-pakistan-green">
-                                <thead className="text-base text-nyanza uppercase bg-pakistan-green text-center">
-                                <tr>
-                                    <th scope="col" className="px-6 py-3">
-                                        Visitante
-                                    </th>
-                                    <th scope="col" className="px-6 py-3">
-                                        Edad
-                                    </th>
-                                    <th scope="col" className="px-6 py-3">
-                                        Tipo de Pase
-                                    </th>
-                                </tr>
-                                </thead>
-                                <tbody className="overflow-y-auto max-h-[450px]">
-                                {fields.map((field, index) => (
-                                    <tr
-                                        key={field.id}
-                                        className="bg-white border-b  border-gray-200 text-base text-center"
-                                    >
-                                        <th
-                                            scope="row"
-                                            className="px-6 py-4 font-bold whitespace-nowrap text-lg"
-                                        >
-                                            Visitante {index + 1}
+                        <div className="rounded-md overflow-hidden border border-pakistan-green max-h-[450px] overflow-y-auto">
+                            <table className="w-full text-sm text-left rtl:text-right text-pakistan-green block md:table">
+                                <thead className="text-base text-nyanza uppercase bg-pakistan-green text-center hidden md:table-header-group">
+                                    <tr>
+                                        <th scope="col" className="px-6 py-3">
+                                            Visitante
                                         </th>
-                                        <td className="px-6 py-4">
-                                            <Controller
-                                                control={methods.control}
-                                                name={`visitantes.${index}.edad`}
-                                                render={({field}) => (
-                                                    <InputNumber
-                                                        min={0}
-                                                        max={100}
-                                                        value={field.value}
-                                                        onChange={(val) =>
-                                                            field.onChange(
-                                                                val ?? 0
-                                                            )
-                                                        }
-                                                        className="w-24"
-                                                    />
-                                                )}
-                                            />
-                                            {methods.formState.errors
-                                                .visitantes?.[index]?.edad && (
-                                                <p className="text-red-500 text-sm">
-                                                    {
-                                                        methods.formState.errors
-                                                            .visitantes[index]
-                                                            ?.edad?.message
-                                                    }
-                                                </p>
-                                            )}
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <Controller
-                                                control={methods.control}
-                                                name={`visitantes.${index}.tipo`}
-                                                render={({field}) => (
-                                                    <Select
-                                                        options={[
-                                                            {
-                                                                value: "regular",
-                                                                label: "Regular",
-                                                                desc: "Regular ($5000)",
-                                                            },
-                                                            {
-                                                                value: "VIP",
-                                                                label: "VIP",
-                                                                desc: "VIP ($10000)",
-                                                            },
-                                                        ]}
-                                                        value={field.value}
-                                                        onChange={
-                                                            field.onChange
-                                                        }
-                                                        className="w-36 text-start"
-                                                        optionRender={(
-                                                            option
-                                                        ) => (
-                                                            <Space>
-                                                                {
-                                                                    option.data
-                                                                        .desc
+                                        <th scope="col" className="px-6 py-3">
+                                            Edad
+                                        </th>
+                                        <th scope="col" className="px-6 py-3">
+                                            Tipo de Pase
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody className="block md:table-row-group">
+                                    {fields.map((field, index) => (
+                                        <tr
+                                            key={field.id}
+                                            className="bg-white text-base block p-4 mb-4 border rounded-lg shadow-sm md:p-0 md:mb-0 md:border-b md:rounded-none md:shadow-none md:table-row md:border-gray-200 md:text-center"
+                                        >
+                                            <th
+                                                scope="row"
+                                                className="px-0 pb-2 md:px-6 md:py-4 font-bold text-lg text-left block md:font-bold md:whitespace-nowrap md:text-lg md:text-center md:table-cell"
+                                            >
+                                                Visitante {index + 1}
+                                            </th>
+                                            <td 
+                                            className="px-0 py-2 md:px-6 md:py-4 block md:table-cell"
+                                            >
+                                                <div className="flex justify-between items-center md:justify-center">
+                                                    <label className="md:hidden font-medium text-gray-700">Edad:</label>
+                                                    <Controller
+                                                        control={methods.control}
+                                                        name={`visitantes.${index}.edad`}
+                                                        render={({field}) => (
+                                                            <InputNumber
+                                                                min={0}
+                                                                max={100}
+                                                                value={field.value}
+                                                                onChange={(val) =>
+                                                                    field.onChange(
+                                                                        val ?? 0
+                                                                    )
                                                                 }
-                                                            </Space>
+                                                                className="w-24"
+                                                            />
                                                         )}
                                                     />
+                                                </div>
+                                                {methods.formState.errors
+                                                    .visitantes?.[index]?.edad && (
+                                                    <p className="text-red-500 text-sm text-right md:text-center">
+                                                        {
+                                                            methods.formState.errors
+                                                                .visitantes[index]
+                                                                ?.edad?.message
+                                                        }
+                                                    </p>
                                                 )}
-                                            />
-                                            {methods.formState.errors
-                                                .visitantes?.[index]?.tipo && (
-                                                <p className="text-red-500 text-sm">
-                                                    {
-                                                        methods.formState.errors
-                                                            .visitantes[index]
-                                                            ?.tipo?.message
-                                                    }
-                                                </p>
-                                            )}
-                                        </td>
-                                    </tr>
-                                ))}
+                                            </td>
+                                            <td className="px-0 py-2 md:px-6 md:py-4 block md:table-cell">
+                                                <div className="flex justify-between items-center md:justify-center">
+                                                    <label className="md:hidden font-medium text-gray-700">Tipo de Pase:</label>
+                                                    <Controller
+                                                        control={methods.control}
+                                                        name={`visitantes.${index}.tipo`}
+                                                        render={({field}) => (
+                                                            <Select
+                                                                options={[
+                                                                    {
+                                                                        value: "regular",
+                                                                        label: "Regular",
+                                                                        desc: "Regular ($5000)",
+                                                                    },
+                                                                    {
+                                                                        value: "VIP",
+                                                                        label: "VIP",
+                                                                        desc: "VIP ($10000)",
+                                                                    },
+                                                                ]}
+                                                                value={field.value}
+                                                                onChange={
+                                                                    field.onChange
+                                                                }
+                                                                className="w-36 text-start"
+                                                                optionRender={(
+                                                                    option
+                                                                ) => (
+                                                                    <Space>
+                                                                        {
+                                                                            option.data
+                                                                                .desc
+                                                                        }
+                                                                    </Space>
+                                                                )}
+                                                            />
+                                                        )}
+                                                    />
+                                                </div>
+                                                {methods.formState.errors
+                                                    .visitantes?.[index]?.tipo && (
+                                                    <p className="text-red-500 text-sm text-right md:text-center">
+                                                        {
+                                                            methods.formState.errors
+                                                                .visitantes[index]
+                                                                ?.tipo?.message
+                                                        }
+                                                    </p>
+                                                )}
+                                            </td>
+                                        </tr>
+                                    ))}
                                 </tbody>
                             </table>
                         </div>
+
                         <div className="text-right mt-2">
                             <p className="text-lg font-medium text-gray-600">Total a Pagar:</p>
                             <p className="text-2xl md:text-3xl font-bold text-pakistan-green">
