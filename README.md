@@ -40,10 +40,10 @@ ISW_Grupo13
 │   ├── PRESENTACIONES
 │   ├── PRACTICAS
 │   └── RESUMENES
-├── ISW_G13_TPs
-│   ├── TIGs
-│   └── PRACTICOS
-└── ISW_G13_CODFUENTE
+└── ISW_G13_TPs
+    ├── TIGs
+    └── PRACTICOS
+
 ```
 
 ---
@@ -67,7 +67,6 @@ ISW_Grupo13
 | Ítem de configuración         | Regla de nombrado                              | Ubicación Física                         |
 | ----------------------------- | ---------------------------------------------- | ---------------------------------------- |
 | **Bibliografía**              | `ISW_G13_BIBLIOGRAFIA_<NombreArchivo>.<ext>`   | `/ISW_G13_BIBLIOGRAFIA`                  |
-| **Código Fuente**             | `ISW_G13_CODFUENTE_<NombreArchivo>.<ext>`      | `/ISW_G13_CODFUENTE`                     |
 | **Material de Clase**         | `ISW_G13_MATCLASE_<NombreArchivo>.<ext>`       | `/ISW_G13_MATERIAL_CLASE`                |
 | **Presentaciones**            | `ISW_G13_MATCLASE_PRES_<Tema>.<ext>`           | `/ISW_G13_MATERIAL_CLASE/PRESENTACIONES` |
 | **Prácticas**                 | `ISW_G13_MATCLASE_PRAC_<Caso>.<ext>`           | `/ISW_G13_MATERIAL_CLASE/PRACTICAS`      |
