@@ -149,5 +149,7 @@ El mensaje de commit debe estructurarse de la siguiente manera:
 ## Otros
 
 - La fecha estará en formato "dd-mm-aaaa". Por ejemplo, el día 5 de noviembre de 2025 sería "05-11-2025".
+- Se utilizará la hora oficial de Argentina (UTC−03:00).
+- Los archivos de texto deberán estar codificados en UTF-8.
 
 ---
