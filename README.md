@@ -92,7 +92,7 @@ La nomenclatura de la línea base debe respetar el siguiente formato:
 - ISW_G13_LINEA_BASE: Prefijo obligatorio para todas las líneas base del proyecto.
 - `<VERSIONxx>`: Número de version con dos dígitos, por ejemplo: 03.
 - `<NOMBRE_LB>`: Nombre descriptivo en PascalCase (sin espacios ni tildes).
-- `<XX>`: Numero de etiqueta correspondiente en caso de reetiquetar por cambios en un TP
+- `<XX>`: Numero de etiqueta correspondiente en caso de reetiquetar por cambios en un TP.
 
 Se crea utilizando el siguiente **comando** en la terminal:
 
@@ -125,25 +125,29 @@ El mensaje de commit debe estructurarse de la siguiente manera:
 
 ### Ejemplos
 
-- add: Guía de enunciados TP1
-- update: resolución del TP2 con correcciones de formato
-- fix: error en el cálculo de fechas en TP3
-- remove: bibliografía duplicada de U2
-- refactor: reestructuración de carpetas de código fuente
-- docs: agregar reglas de nombrado en README
-- create: primer commit
+- add: Guía de enunciados TP1.
+- update: resolución del TP2 con correcciones de formato.
+- fix: error en el cálculo de fechas en TP3.
+- remove: bibliografía duplicada de U2.
+- refactor: reestructuración de carpetas de código fuente.
+- docs: agregar reglas de nombrado en README.
+- create: primer commit.
 
 ---
 
 ## Glosario
 
-- ISW: Ingenieria y calidad de Software
-- G13: Grupo 13 de la materia Ingenieria y calidad de Software
+- ISW: Ingenieria y calidad de Software.
+- G13: Grupo 13 de la materia Ingenieria y calidad de Software.
+- MATCLASE: Material de clase.
+- PRES: Presentaciones de clase.
+- PRAC: Material practico.
+- RESUM: Resumen.
 
 ---
 
 ## Otros
 
-La fecha estará en formato "dd-mm-aaaa". Por ejemplo, el día 5 de noviembre de 2025 sería "05-11-2025".
+- La fecha estará en formato "dd-mm-aaaa". Por ejemplo, el día 5 de noviembre de 2025 sería "05-11-2025".
 
 ---
